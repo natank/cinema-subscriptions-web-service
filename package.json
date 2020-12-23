@@ -4,16 +4,22 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"server": "nodemon server.js"
+		"server": "nodemon --inspect -r esm main.js"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@babel/register": "^7.12.10",
+		"axios": "^0.21.1",
 		"express": "^4.17.1",
 		"mongoose": "^5.11.8"
 	},
 	"devDependencies": {
+		"@babel/core": "^7.12.10",
+		"@babel/node": "^7.12.10",
+		"@babel/preset-env": "^7.12.11",
+		"esm": "^3.2.25",
 		"nodemon": "^2.0.6"
 	}
 }
