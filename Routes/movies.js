@@ -5,5 +5,7 @@ const router = express.Router();
 
 router.get('/', moviesController.findMovies);
 router.get('/load', moviesController.loadMovies);
+router.get('/:_id', moviesController.findMovie)
+router.delete('/:_id', moviesController.deleteMovie)
 
 export default router;
