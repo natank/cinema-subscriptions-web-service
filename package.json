@@ -4,13 +4,14 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"server": "nodemon --inspect -r dotenv/config -r esm main.js",
+		"server": "nodemon --inspect -r dotenv/config main.js",
 		"prod": "node main.js"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@babel/plugin-transform-runtime": "^7.12.10",
 		"@babel/register": "^7.12.10",
 		"axios": "^0.21.1",
 		"dotenv": "^8.2.0",
