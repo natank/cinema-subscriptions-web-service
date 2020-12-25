@@ -1,9 +1,18 @@
 import axios from 'axios';
 import Member, { dropCollection } from '../Model/Member';
 
-export function findMembers(req, res, next) {
-	console.log('find members');
-	res.json({ msg: 'find members' });
+export async function findMember(req, res, next) {
+	var { _id } = req.params;
+	try {
+		var member = await Member.findById(_id);
+		if (member) {
+			var { _id, name, email, city } = member;
+			res.json({ _id, name, email, city });
+		} else res.status(204).end();
+	} catch (err) {
+		console.log(err);
+		res.status(500).end();
+	}
 }
 
 export async function loadMembers(req, res, next) {
@@ -41,4 +50,22 @@ export async function createMember(req, res, next) {
 	} catch (err) {
 		throw err;
 	}
+}
+
+export async function updateMember(req, res, next) {
+	var { _id, name, email, city } = req.body;
+
+	try {
+		var result = await Member.updateOne({ _id }, { name, email, city });
+		res.status(200).end();
+	} catch (err) {
+		res.status(500).end();
+		throw err;
+	}
+}
+
+export async function deleteMember(req, res, next) {
+	var { _id } = req.params;
+	await Member.deleteOne({ _id });
+	res.status(200).end();
 }

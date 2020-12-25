@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
-const URI =
-	'mongodb+srv://dbUser:abcde@cluster0.lwcbk.mongodb.net/node-final?retryWrites=true&w=majority';
+const URI = process.env.DB_URI;
 
 export default async function connectDB() {
 	mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true });

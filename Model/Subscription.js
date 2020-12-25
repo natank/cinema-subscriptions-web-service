@@ -2,9 +2,12 @@ import mongoose from 'mongoose';
 var { Schema } = mongoose;
 
 const subscription = new Schema({
-	memberId: Schema.Types.ObjectId,
+	member: {
+		type: Schema.Types.ObjectId,
+		ref: 'member',
+	},
 	movies: {
-		type: Array,
+		type: [{ type: Schema.Types.ObjectId, ref: 'movie' }],
 		default: [],
 	},
 });
