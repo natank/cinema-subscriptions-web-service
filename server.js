@@ -13,6 +13,6 @@ app.use('/movies', moviesRouter);
 app.use('/members', membersRouter);
 app.use('/subscriptions', subscriptionsRouter);
 
-const Port = process.env.Port || 3000;
+const Port = process.env.PORT || 3000;
 
 app.listen(Port, () => console.log(`Server listening on port ${Port} `));
