@@ -4,7 +4,7 @@ import Movies, { dropCollection } from '../Model/Movie';
 
 export async function findMovies(req, res, next) {
 	var { name, genres } = req.body;
-	var filter = { name, genres: { $in: genres } };
+	var filter = { name, genres: genres ? { ['$in']: genres } : genres };
 
 	for (const [key, value] of Object.entries(filter)) {
 		if (!value) delete filter[key];
