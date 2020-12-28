@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const Movie = new mongoose.Schema({
 	name: String,
-	genres: Array,
+	genres: [String],
 	premiered: String,
 	image: String,
 });

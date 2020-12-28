@@ -1,8 +1,22 @@
 import axios from 'axios';
 import Movie from '../Model/Movie';
 import Movies, { dropCollection } from '../Model/Movie';
-export function findMovies(req, res, next) {
-	res.status(202).json({ msg: 'find movies' });
+
+export async function findMovies(req, res, next) {
+	var { name, genres } = req.body;
+	var filter = { name, genres: { $in: genres } };
+
+	for (const [key, value] of Object.entries(filter)) {
+		if (!value) delete filter[key];
+	}
+
+	try {
+		var movies = await Movie.find(filter);
+		res.status(200).json(movies);
+	} catch (err) {
+		res.status(500).end();
+		throw err;
+	}
 }
 
 export async function loadMovies(req, res, next) {
