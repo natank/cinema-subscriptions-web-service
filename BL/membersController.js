@@ -15,6 +15,22 @@ export async function findMember(req, res, next) {
 	}
 }
 
+export async function findMembers(req, res, next){
+	try {
+		var members = await Member.find();
+		if(members ){
+			members = members.map(member=>{
+				var { _id, name, email, city } = member;
+				return { _id, name, email, city }
+			})
+		}
+		res.status(200).json(members)
+	} catch (error) {
+		res.status(500).end()
+		console.log(error)
+	}
+}
+
 export async function loadMembers(req, res, next) {
 	try {
 		var members = await axios.get('https://jsonplaceholder.typicode.com/users');

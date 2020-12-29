@@ -9,7 +9,9 @@ connectDB();
 
 app.use(express.json({ extended: false }));
 app.use(express.urlencoded({ extended: true }));
-app.use('/movies', moviesRouter);
+app.use('/movies', (req, res, next)=>{console.log("movies route");
+next()
+},moviesRouter);
 app.use('/members', membersRouter);
 app.use('/subscriptions', subscriptionsRouter);
 
