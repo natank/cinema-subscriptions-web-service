@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"server": "nodemon --inspect -r dotenv/config main.js",
+		"server": "nodemon --inspect=127.0.0.1:7000 -r dotenv/config main.js",
 		"servern": "nodemon -r dotenv/config main.js",
 		"prod": "node main.js"
 	},

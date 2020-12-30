@@ -6,10 +6,12 @@ const subscription = new Schema({
 		type: Schema.Types.ObjectId,
 		ref: 'member',
 	},
-	movies: {
-		type: [{ type: Schema.Types.ObjectId, ref: 'movie' }],
-		default: [],
-	},
+	movies: [
+		{
+			movie: { type: Schema.Types.ObjectId, ref: 'movie' },
+			date: String,
+		},
+	],
 });
 
 export default mongoose.model('subscription', subscription);
