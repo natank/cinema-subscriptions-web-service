@@ -74,7 +74,6 @@ export async function findMovie(req, res, next) {
 		}
 	}
 	if (movie) {
-		console.log('found movie');
 		res.status(200).json(movie);
 	} else {
 		console.log('movie is missing');
