@@ -93,19 +93,19 @@ export async function deleteMovie(req, res, next) {
 }
 
 export async function updateMovie(req, res, next) {
-	var { _id, name, genres, premiered, image } = req.body;
+	var { id, name, genres, premiered, image } = req.body;
 	var doc;
 	try {
 		try {
 			var response = await Movie.updateOne(
-				{ _id },
+				{ _id: id },
 				{ name, genres, premiered, image }
 			);
 		} catch (err) {
 			throw err;
 		}
 		try {
-			doc = await Movie.findById(_id);
+			doc = await Movie.findById(id);
 		} catch (err) {
 			throw err;
 		}
