@@ -1,4 +1,8 @@
 import axios from 'axios';
+import {
+	findMemberSubscriptions,
+	findMovieSubscriptions,
+} from './subscriptionsController';
 import Member, { dropCollection } from '../Model/Member';
 
 export async function findMember(req, res, next) {
@@ -15,19 +19,20 @@ export async function findMember(req, res, next) {
 	}
 }
 
-export async function findMembers(req, res, next){
+export async function findMembers(req, res, next) {
 	try {
 		var members = await Member.find();
-		if(members ){
-			members = members.map(member=>{
+		if (members) {
+			members = members.map(member => {
 				var { _id, name, email, city } = member;
-				return { _id, name, email, city }
-			})
+				return { _id, name, email, city };
+			});
+			await Promise.all(members.map(member => findMemberSubscriptions(member)));
 		}
-		res.status(200).json(members)
+		res.status(200).json(members);
 	} catch (error) {
-		res.status(500).end()
-		console.log(error)
+		res.status(500).end();
+		console.log(error);
 	}
 }
 

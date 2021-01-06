@@ -6,43 +6,6 @@ export async function findSubscriptions(req, res, next) {
 		? await findMemberSubscriptions(memberId)
 		: await findMovieSubscriptions(movieId);
 
-	async function findMemberSubscriptions(memberId) {
-		var docs = await Subscription.findOne(
-			{ member: memberId },
-			'-_id -movies._id -member'
-		);
-
-		const opts = [
-			{ path: 'member' },
-			{
-				path: 'movies',
-				select: { _id: 0 },
-				populate: [
-					{
-						path: 'movie',
-						select: { _id: 1, name: 1 },
-					},
-				],
-			},
-		];
-
-		docs = await Subscription.populate(docs, opts);
-		return docs;
-	}
-
-	async function findMovieSubscriptions(movieId) {
-		var docs = await Subscription.find(
-			{ 'movies.movie': movieId },
-			'-_id member'
-		);
-
-		const opts = [{ path: 'member', select: 'name' }];
-
-		docs = await Subscription.populate(docs, opts);
-
-		return docs;
-	}
-
 	if (docs) {
 		res.status(200).json(docs);
 	} else res.status(204).end();
@@ -65,4 +28,42 @@ export async function createSubscription(req, res, next) {
 export function deleteSubscription(req, res, next) {
 	console.log('delete subscriptions route');
 	res.json({ msg: 'delete subscriptions' });
+}
+
+export async function findMemberSubscriptions(member) {
+	var memberId = member._id;
+	var doc = await Subscription.findOne(
+		{ member: memberId },
+		'-_id -movies._id -member'
+	);
+
+	const opts = [
+		{ path: 'member' },
+		{
+			path: 'movies',
+			select: { _id: 0 },
+			populate: [
+				{
+					path: 'movie',
+					select: { _id: 1, name: 1 },
+				},
+			],
+		},
+	];
+
+	doc = await Subscription.populate(doc, opts);
+	member.subscriptions = doc ? doc.movies : [];
+}
+
+export async function findMovieSubscriptions(movieId) {
+	var docs = await Subscription.find(
+		{ 'movies.movie': movieId },
+		'-_id member'
+	);
+
+	const opts = [{ path: 'member', select: 'name' }];
+
+	docs = await Subscription.populate(docs, opts);
+
+	return docs;
 }
