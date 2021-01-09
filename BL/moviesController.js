@@ -1,17 +1,32 @@
 import axios from 'axios';
 import Movie from '../Model/Movie';
 import Movies, { dropCollection } from '../Model/Movie';
+import { findMovieSubscriptions } from './subscriptionsController';
 
 export async function findMovies(req, res, next) {
 	var { name, genres } = req.body;
-	var filter = { name, genres: genres ? { ['$in']: genres } : genres };
+	var filter = {
+		name: name ? RegExp(name, 'i') : name,
+		genres: genres ? { ['$in']: genres } : genres,
+	};
 
 	for (const [key, value] of Object.entries(filter)) {
 		if (!value) delete filter[key];
 	}
 
 	try {
-		var movies = await Movie.find(filter);
+		var movies = await Movie.find(filter).sort('name');
+		movies = await Promise.all(
+			movies.map(async movie => {
+				var movieSubscriptions = await findMovieSubscriptions(movie._id);
+				var { id, genres, image, name, premiered } = movie;
+				var subscriptions = movieSubscriptions.slice(
+					movieSubscriptions.length - 2,
+					movieSubscriptions.length
+				);
+				return { id, genres, image, name, premiered, subscriptions };
+			})
+		);
 		res.status(200).json(movies);
 	} catch (err) {
 		res.status(500).end();

@@ -11,6 +11,7 @@ export async function findMember(req, res, next) {
 		var member = await Member.findById(_id);
 		if (member) {
 			var { _id, name, email, city } = member;
+
 			res.json({ _id, name, email, city });
 		} else res.status(204).end();
 	} catch (err) {
@@ -27,7 +28,12 @@ export async function findMembers(req, res, next) {
 				var { _id, name, email, city } = member;
 				return { _id, name, email, city };
 			});
-			await Promise.all(members.map(member => findMemberSubscriptions(member)));
+			await Promise.all(
+				members.map(
+					async member =>
+						(member.subscriptions = await findMemberSubscriptions(member))
+				)
+			);
 		}
 		res.status(200).json(members);
 	} catch (error) {

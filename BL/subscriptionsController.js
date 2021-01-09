@@ -1,7 +1,7 @@
 import Subscription from '../Model/Subscription';
 
 export async function findSubscriptions(req, res, next) {
-	var { memberId, movieId } = req.body;
+	var { memberId, movieId } = req.query;
 	var docs = memberId
 		? await findMemberSubscriptions(memberId)
 		: await findMovieSubscriptions(movieId);
@@ -30,8 +30,7 @@ export function deleteSubscription(req, res, next) {
 	res.json({ msg: 'delete subscriptions' });
 }
 
-export async function findMemberSubscriptions(member) {
-	var memberId = member._id;
+export async function findMemberSubscriptions(memberId) {
 	var doc = await Subscription.findOne(
 		{ member: memberId },
 		'-_id -movies._id -member'
@@ -51,19 +50,53 @@ export async function findMemberSubscriptions(member) {
 		},
 	];
 
-	doc = await Subscription.populate(doc, opts);
-	member.subscriptions = doc ? doc.movies : [];
+	doc = doc && (await Subscription.populate(doc, opts));
+
+	var retval = doc
+		? doc.movies.slice(doc.movies.length - 2, doc.movies.length)
+		: [];
+	return retval;
 }
 
 export async function findMovieSubscriptions(movieId) {
-	var docs = await Subscription.find(
+	// Movie subscription structure includes member name and date
+
+	var movieId = movieId.toString();
+
+	// find all the subscriptions where this movie is included
+
+	var movieSubscriptions = await Subscription.find(
 		{ 'movies.movie': movieId },
-		'-_id member'
+		'-_id member movies'
 	);
 
-	const opts = [{ path: 'member', select: 'name' }];
+	const memberPopulationOpts = [{ path: 'member', select: 'name' }];
 
-	docs = await Subscription.populate(docs, opts);
+	// return an empty array if there are no subscriptions for the movie
+	try {
+		movieSubscriptions = movieSubscriptions
+			? await Subscription.populate(movieSubscriptions, memberPopulationOpts)
+			: [];
+	} catch (error) {
+		movieSubscriptions = [];
+	}
 
-	return docs;
+	if (movieSubscriptions.length > 0) {
+		// Need to return only the member name and date fields of the subscription
+		movieSubscriptions = movieSubscriptions.map(subscription => {
+			var movie = subscription.movies.find(
+				movie => movie.movie.toString() == movieId
+			);
+			var date = movie.date;
+			return {
+				member: {
+					name: subscription.member.name,
+					id: subscription.member._id.toString(),
+				},
+				date,
+			};
+		});
+	}
+
+	return movieSubscriptions;
 }
