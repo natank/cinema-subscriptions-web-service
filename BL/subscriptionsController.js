@@ -83,19 +83,22 @@ export async function findMovieSubscriptions(movieId) {
 
 	if (movieSubscriptions.length > 0) {
 		// Need to return only the member name and date fields of the subscription
-		movieSubscriptions = movieSubscriptions.map(subscription => {
+		movieSubscriptions = movieSubscriptions.reduce((acc,subscription) => {
 			var movie = subscription.movies.find(
 				movie => movie.movie.toString() == movieId
 			);
-			var date = movie.date;
-			return {
-				member: {
-					name: subscription.member.name,
-					id: subscription.member._id.toString(),
-				},
-				date,
-			};
-		});
+			if(subscription.member){
+				var date = movie.date;
+				acc.push( {
+					member: {
+						name: subscription.member.name,
+						id: subscription.member._id.toString(),
+					},
+					date,
+				});
+			}
+			return acc
+		}, []);
 	}
 
 	return movieSubscriptions;
