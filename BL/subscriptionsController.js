@@ -83,13 +83,13 @@ export async function findMovieSubscriptions(movieId) {
 
 	if (movieSubscriptions.length > 0) {
 		// Need to return only the member name and date fields of the subscription
-		movieSubscriptions = movieSubscriptions.reduce((acc,subscription) => {
+		movieSubscriptions = movieSubscriptions.reduce((acc, subscription) => {
 			var movie = subscription.movies.find(
 				movie => movie.movie.toString() == movieId
 			);
-			if(subscription.member){
+			if (subscription.member) {
 				var date = movie.date;
-				acc.push( {
+				acc.push({
 					member: {
 						name: subscription.member.name,
 						id: subscription.member._id.toString(),
@@ -97,7 +97,7 @@ export async function findMovieSubscriptions(movieId) {
 					date,
 				});
 			}
-			return acc
+			return acc;
 		}, []);
 	}
 

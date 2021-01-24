@@ -4,7 +4,7 @@ import {
 	findMovieSubscriptions,
 } from './subscriptionsController';
 import Member, { dropCollection } from '../Model/Member';
-import Subscription from '../Model/Subscription'
+import Subscription from '../Model/Subscription';
 
 export async function findMember(req, res, next) {
 	var { _id } = req.params;
@@ -96,10 +96,9 @@ export async function deleteMember(req, res, next) {
 	var { _id } = req.params;
 	try {
 		await Member.deleteOne({ _id });
-		await Subscription.deleteOne({member: _id})
-		res.status(200).end();	
+		await Subscription.deleteOne({ member: _id });
+		res.status(200).end();
 	} catch (error) {
 		res.status(500).end();
 	}
-	
 }
